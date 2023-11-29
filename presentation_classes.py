@@ -124,14 +124,30 @@ class IO:
             employee_object = employee_type()
 
             # Validate first name
-            first_name = input("What is the employee's first name? ")
-            if not first_name.isalpha():
-                raise ValueError("First name should only contain alphabetic characters.")
+            while True:
+                try:
+                    first_name = input("What is the employee's first name? ")
+                    if not first_name.isalpha():
+                        raise ValueError("First name should only contain alphabetic characters.")
+                    break
+                except ValueError:
+                    print("First name should only contain alphabetic characters.")
+            # first_name = input("What is the employee's first name? ")
+            # if not first_name.isalpha():
+            #     raise ValueError("First name should only contain alphabetic characters.")
 
             # Validate last name
-            last_name = input("What is the employee's last name? ")
-            if not last_name.isalpha():
-                raise ValueError("Last name should only contain alphabetic characters.")
+            while True:
+                try:
+                    last_name = input("What is the employee's last name? ")
+                    if not last_name.isalpha():
+                        raise ValueError("Last name should only contain alphabetic characters.")
+                    break
+                except ValueError:
+                    print("Last name should only contain alphabetic characters.")
+            # last_name = input("What is the employee's last name? ")
+            # if not last_name.isalpha():
+            #     raise ValueError("Last name should only contain alphabetic characters.")
 
             # Validate review date
             while True:
@@ -143,9 +159,18 @@ class IO:
                     print("Invalid date format. Please use YYYY-MM-DD format.")
 
             # Validate review rating
-            review_rating_str = input("What is their review rating (1-5)? ")
-            if not review_rating_str.isdigit() or not (1 <= int(review_rating_str) <= 5):
-                raise ValueError("Review rating must be an integer between 1 and 5.")
+            while True:
+                try:
+                    review_rating_str = input("What is their review rating (1-5)? ")
+                    review_rating = int(review_rating_str)
+                    if not (1 <= review_rating <= 5):
+                        raise ValueError("Review rating must be an integer between 1 and 5.")
+                    break
+                except ValueError:
+                    print("Review rating must be an integer between 1 and 5.")
+                # review_rating_str = input("What is their review rating (1-5)? ")
+                # if not review_rating_str.isdigit() or not (1 <= int(review_rating_str) <= 5):
+                #     raise ValueError("Review rating must be an integer between 1 and 5.")
 
             # Assign validated values to the employee object
             employee_object.first_name = first_name

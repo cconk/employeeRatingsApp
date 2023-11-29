@@ -28,9 +28,7 @@ employees: list = []  # a table of employee data
 menu_choice = ''
 
 # Beginning of the main body of this script
-employees = FileProcessor.read_employee_data_from_file(file_name=FILE_NAME,
-                                                       employee_data=employees,
-                                                       employee_type=Employee)  # Note this is the class name (ignore the warning)
+employees = FileProcessor.read_employee_data_from_file(file_name=FILE_NAME, employee_data=employees, employee_type=Employee)  # Note this is the class name (ignore the warning)
 
 # Repeat the follow tasks
 while True:

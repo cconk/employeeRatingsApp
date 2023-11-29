@@ -19,5 +19,16 @@ The Employee Ratings App is an educational project developed as part of the Intr
     Update existing employee records.
     Review and assign ratings to employees.
 
-Contributing
+# Contributing
   Contributions to the Employee Ratings App are welcome. Please fork the repository and submit a pull request with your proposed changes.
+
+# Description of Functionality from a user perspective
+  The Employee Ratings App is a Python program designed for managing and reviewing employee performance. From a user's perspective, here's what the program does:
+    Manage Employee Data: Users can add and update employee information, including names, review dates, and ratings.
+    Menu-Driven Interface: The program offers a menu with options to display current data, enter new employee data, save data to a file, or exit the program.
+    Data Storage: Employee information is stored and managed in a JSON file (EmployeeRatings.json), allowing for persistence of data between sessions.
+    Employee Class: The Employee class inherits from the Person class and includes additional properties for the review date and review rating.
+    File Processing: The FileProcessor class handles reading from and writing to the JSON file, ensuring data is correctly saved and retrieved.
+    User Interaction: The IO class manages user input and output, displaying the menu, capturing user choices, and handling data entry.
+    Error Handling: The program includes error handling to manage incorrect data inputs and other exceptions.
+  Users interact with the program through a simple command-line interface, selecting options from the menu to manage and review employee data.
