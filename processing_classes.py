@@ -1,3 +1,11 @@
+# ------------------------------------------------------------------------------------------------- #
+# Title: Assignment08
+# # Description: A collection of classes for managing the application
+# ChangeLog: (Who, When, What)
+# RRoot,1.5.2030,Created Script
+# Chad Conklin, 11/29/2020, Added read_employee_data_from_file and write_employee_data_to_file
+# ------------------------------------------------------------------------------------------------- #
+
 import json
 from data_classes import Employee
 
@@ -7,6 +15,7 @@ class FileProcessor:
 
     ChangeLog: (Who, When, What)
     RRoot,1.1.2030,Created Class
+    Chad Conklin, 11/29/2020, Added read_employee_data_from_file and write_employee_data_to_file
     """
 
     @staticmethod
@@ -15,6 +24,7 @@ class FileProcessor:
 
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
+        Chad Conklin, 11/29/2020, Copied code from Module 8 Assignment
 
         :param file_name: string data with name of file to read from
         :param employee_data: list of dictionary rows to be filled with file data
@@ -23,18 +33,19 @@ class FileProcessor:
         """
         try:
             with open(file_name, "r") as file:
-                list_of_dictionary_data = json.load(file)  # the load function returns a list of dictionary rows.
+                list_of_dictionary_data = json.load(file)
                 for employee in list_of_dictionary_data:
                     employee_object = employee_type()
-                    employee_object.first_name=employee["FirstName"]
-                    employee_object.last_name=employee["LastName"]
-                    employee_object.review_date=employee["ReviewDate"]
-                    employee_object.review_rating=employee["ReviewRating"]
+                    employee_object.first_name = employee["FirstName"]
+                    employee_object.last_name = employee["LastName"]
+                    employee_object.review_date = employee["ReviewDate"]
+                    employee_object.review_rating = employee["ReviewRating"]
                     employee_data.append(employee_object)
         except FileNotFoundError:
-            raise FileNotFoundError("Text file must exist before running this script!")
-        except Exception:
-            raise Exception("There was a non-specific error!")
+            print(f"File {file_name} not found. Starting with an empty employee list.")
+            return employee_data  # Return the empty list if the file does not exist
+        except Exception as e:
+            raise Exception(f"There was an error reading the file: {e}")
         return employee_data
 
     @staticmethod
@@ -43,6 +54,7 @@ class FileProcessor:
 
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
+        Chad Conklin, 11/29/2020, Added try/except block to handle file not found error
 
         :param file_name: string data with name of file to write to
         :param employee_data: list of dictionary rows to be writen to the file

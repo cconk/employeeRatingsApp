@@ -1,4 +1,11 @@
-# data_classes.py
+# ------------------------------------------------------------------------------------------------- #
+# Title: Assignment08
+# # Description: A collection of classes for managing the application
+# ChangeLog: (Who, When, What)
+# RRoot,1.5.2030,Created Script
+# Chad Conklin, 11/29/2020, Added read_employee_data_from_file and write_employee_data_to_file
+# ------------------------------------------------------------------------------------------------- #
+
 from datetime import date
 
 class Person:
@@ -11,6 +18,7 @@ class Person:
 
     ChangeLog:
     - RRoot, 1.1.2030: Created the class.
+    Chad Conklin, 11/29/2020, Added first_name and last_name properties
     """
 
     def __init__(self, first_name: str = "", last_name: str = ""):
@@ -55,6 +63,7 @@ class Employee(Person):
 
     ChangeLog:
     - RRoot, 1.1.2030: Created the class.
+     Chad Conklin, 11/29/2020, Added read_employee_data_from_file and write_employee_data_to_file
     """
 
     def __init__(self, first_name: str = "", last_name: str = "", review_date: str = "1900-01-01", review_rating: int = 3):

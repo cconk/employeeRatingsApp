@@ -1,4 +1,13 @@
+# ------------------------------------------------------------------------------------------------- #
+# Title: Assignment08
+# # Description: A collection of classes for managing the application
+# ChangeLog: (Who, When, What)
+# RRoot,1.5.2030,Created Script
+# Chad Conklin, 11/29/2020, Added read_employee_data_from_file and write_employee_data_to_file
+# ------------------------------------------------------------------------------------------------- #
+
 from data_classes import Employee 
+import datetime
 
 class IO:
     """
@@ -6,6 +15,7 @@ class IO:
 
     ChangeLog: (Who, When, What)
     RRoot,1.1.2030,Created Class
+    Chad Conklin, 11/29/2020, Added read_employee_data_from_file and write_employee_data_to_file
     """
     pass
 
@@ -15,6 +25,7 @@ class IO:
 
         ChangeLog: (Who, When, What)
         RRoot,1.3.2030,Created function
+        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
 
         :param message: string with message data to display
         :param error: Exception object with technical message to display
@@ -34,6 +45,7 @@ class IO:
 
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
+        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
 
         :return: None
         """
@@ -48,6 +60,7 @@ class IO:
 
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
+        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
 
         :return: string with the users choice
         """
@@ -68,6 +81,7 @@ class IO:
 
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
+        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
 
         :param employee_data: list of employee object data to be displayed
 
@@ -95,10 +109,11 @@ class IO:
 
     @staticmethod
     def input_employee_data(employee_data: list, employee_type: Employee):
-        """ This function gets the first name, last name, and GPA from the user
+        """ This function gets the first name, last name, and rating from the user
 
         ChangeLog: (Who, When, What)
         RRoot,1.1.2030,Created function
+        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
 
         :param employee_data: list of dictionary rows to be filled with input data
 
@@ -106,16 +121,42 @@ class IO:
         """
 
         try:
-            # Input the data
             employee_object = employee_type()
-            employee_object.first_name = input("What is the employee's first name? ")
-            employee_object.last_name = input("What is the employee's last name? ")
-            employee_object.review_date = input("What is their review date? ")
-            employee_object.review_rating = int(input("What is their review rating? "))
+
+            # Validate first name
+            first_name = input("What is the employee's first name? ")
+            if not first_name.isalpha():
+                raise ValueError("First name should only contain alphabetic characters.")
+
+            # Validate last name
+            last_name = input("What is the employee's last name? ")
+            if not last_name.isalpha():
+                raise ValueError("Last name should only contain alphabetic characters.")
+
+            # Validate review date
+            while True:
+                try:
+                    review_date_str = input("What is their review date (YYYY-MM-DD)? ")
+                    review_date = datetime.datetime.strptime(review_date_str, '%Y-%m-%d').date()
+                    break
+                except ValueError:
+                    print("Invalid date format. Please use YYYY-MM-DD format.")
+
+            # Validate review rating
+            review_rating_str = input("What is their review rating (1-5)? ")
+            if not review_rating_str.isdigit() or not (1 <= int(review_rating_str) <= 5):
+                raise ValueError("Review rating must be an integer between 1 and 5.")
+
+            # Assign validated values to the employee object
+            employee_object.first_name = first_name
+            employee_object.last_name = last_name
+            employee_object.review_date = review_date_str
+            employee_object.review_rating = int(review_rating_str)
+
             employee_data.append(employee_object)
 
         except ValueError as e:
-            IO.output_error_messages("That value is not the correct type of data!", e)
+            IO.output_error_messages("Input error: " + str(e))
         except Exception as e:
             IO.output_error_messages("There was a non-specific error!", e)
 
