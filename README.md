@@ -1,4 +1,4 @@
-# employeeRatingsApp
+# Employee Ratings Application
 Employee ratings app for Intro to Python UW
 # Introduction
 The Employee Ratings App is an educational project developed as part of the Intro to Python course at the University of Washington. This application is designed to manage employee ratings effectively.
