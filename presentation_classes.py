@@ -100,7 +100,7 @@ class IO:
             elif employee.review_rating == 2:
                 message = " {} {} is rated as 2 (Building)"
             elif employee.review_rating == 1:
-                message = " {} {} is rated as 1 (Not Meeting Expectations"
+                message = " {} {} is rated as 1 (Not Meeting Expectations)"
 
             print(message.format(employee.first_name, employee.last_name, employee.review_date, employee.review_rating))
         print("-" * 50)
@@ -119,7 +119,21 @@ class IO:
 
         :return: list
         """
+        def check_quit(input_value: str):
+            """ This function checks if the user wants to quit
 
+            ChangeLog: (Who, When, What)
+            Chad Conklin, 11/29/2020, Created function
+
+            :param input_value: string to check if the user wants to quit
+
+            :return: boolean
+            """
+            if input_value.lower() == "quit":
+                print("You chose to quit the employee input process.")
+                return True
+            return False
+        
         try:
             employee_object = employee_type()
 
@@ -127,33 +141,34 @@ class IO:
             while True:
                 try:
                     first_name = input("What is the employee's first name? ")
-                    if not first_name.isalpha():
-                        raise ValueError("First name should only contain alphabetic characters.")
+                    if check_quit(first_name):
+                        return employee_data
+                    elif not first_name.isalpha():
+                        raise ValueError
                     break
                 except ValueError:
                     print("First name should only contain alphabetic characters.")
-            # first_name = input("What is the employee's first name? ")
-            # if not first_name.isalpha():
-            #     raise ValueError("First name should only contain alphabetic characters.")
 
             # Validate last name
             while True:
                 try:
                     last_name = input("What is the employee's last name? ")
-                    if not last_name.isalpha():
-                        raise ValueError("Last name should only contain alphabetic characters.")
+                    if check_quit(last_name):
+                       return employee_data
+                    elif not last_name.isalpha():
+                        raise ValueError
                     break
                 except ValueError:
                     print("Last name should only contain alphabetic characters.")
-            # last_name = input("What is the employee's last name? ")
-            # if not last_name.isalpha():
-            #     raise ValueError("Last name should only contain alphabetic characters.")
-
+           
             # Validate review date
             while True:
                 try:
                     review_date_str = input("What is their review date (YYYY-MM-DD)? ")
-                    review_date = datetime.datetime.strptime(review_date_str, '%Y-%m-%d').date()
+                    if check_quit(review_date_str):
+                        return employee_data
+                    elif not datetime.datetime.strptime(review_date_str, '%Y-%m-%d').date():
+                        raise ValueError
                     break
                 except ValueError:
                     print("Invalid date format. Please use YYYY-MM-DD format.")
@@ -162,15 +177,13 @@ class IO:
             while True:
                 try:
                     review_rating_str = input("What is their review rating (1-5)? ")
-                    review_rating = int(review_rating_str)
-                    if not (1 <= review_rating <= 5):
-                        raise ValueError("Review rating must be an integer between 1 and 5.")
+                    if check_quit(review_rating_str):
+                        return employee_data
+                    elif not (1 <= int(review_rating_str) <= 5):
+                        raise ValueError
                     break
                 except ValueError:
                     print("Review rating must be an integer between 1 and 5.")
-                # review_rating_str = input("What is their review rating (1-5)? ")
-                # if not review_rating_str.isdigit() or not (1 <= int(review_rating_str) <= 5):
-                #     raise ValueError("Review rating must be an integer between 1 and 5.")
 
             # Assign validated values to the employee object
             employee_object.first_name = first_name

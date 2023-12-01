@@ -10,7 +10,6 @@ import unittest
 from unittest.mock import patch
 from presentation_classes import IO
 from data_classes import Employee
-from datetime import datetime
 
 # Test data for the IO class
 class TestIO(unittest.TestCase):
@@ -21,7 +20,7 @@ class TestIO(unittest.TestCase):
             IO.output_employee_data(employees)
             mock_print.assert_called()
 
-    #testing an IO method that requires user input
+    #testing an IO method that requires valid user input
     def test_input_employee_data(self):
         employee_data = []
         with patch('builtins.input', side_effect=("John", "Doe","2023-01-01", "4")):
@@ -31,6 +30,29 @@ class TestIO(unittest.TestCase):
             self.assertEqual(employee_data[0].review_date, "2023-01-01")
             self.assertEqual(employee_data[0].review_rating, 4)
             self.assertEqual(len(employee_data), 1)
+
+    # testing an IO method that requires invalid user input
+    def test_input_employee_data_invalid_user_input(self):
+        employee_data = []
+        with patch('builtins.input', side_effect=("John111", "Doe111","2023-01-aa", "asdf")):
+            IO.input_employee_data(employee_data, Employee)
+            self.assertEqual(len(employee_data), 0)
+        with patch('builtins.input', side_effect=("John", "Doe111","2023-01-aa", "asdf")):
+            IO.input_employee_data(employee_data, Employee)
+            self.assertEqual(len(employee_data), 0)
+        with patch('builtins.input', side_effect=("John", "Doe","2023-01-aa", "asdf")):
+            IO.input_employee_data(employee_data, Employee)
+            self.assertEqual(len(employee_data), 0)
+        with patch('builtins.input', side_effect=("John", "Doe","2023-01-01", "asdf")):
+            IO.input_employee_data(employee_data, Employee)
+            self.assertEqual(len(employee_data), 0)
+    
+    #testing an IO method that user quits on first input
+    def test_input_employee_data_quit_onFirstName(self):
+        employee_data = []
+        with patch('builtins.input', side_effect=("quit", "Doe","2023-01-01", "4")):
+            IO.input_employee_data(employee_data, Employee)
+            self.assertEqual(len(employee_data), 0)
 
     # testing an IO method that requires user input
     def test_input_menu_choice(self):
