@@ -139,51 +139,47 @@ class IO:
 
             # Validate first name
             while True:
+                first_name = input("What is the employee's first name? ")
+                if check_quit(first_name):
+                    return employee_data
                 try:
-                    first_name = input("What is the employee's first name? ")
-                    if check_quit(first_name):
-                        return employee_data
-                    elif not first_name.isalpha():
-                        raise ValueError
+                    employee_object.first_name = first_name
                     break
-                except ValueError:
-                    print("First name should only contain alphabetic characters.")
+                except ValueError as e:
+                    print(e)
 
             # Validate last name
             while True:
+                last_name = input("What is the employee's last name? ")
+                if check_quit(last_name):
+                    return employee_data
                 try:
-                    last_name = input("What is the employee's last name? ")
-                    if check_quit(last_name):
-                       return employee_data
-                    elif not last_name.isalpha():
-                        raise ValueError
+                    employee_object.last_name = last_name
                     break
-                except ValueError:
-                    print("Last name should only contain alphabetic characters.")
+                except ValueError as e:
+                    print(e)
            
             # Validate review date
             while True:
+                review_date_str = input("What is their review date (YYYY-MM-DD)? ")
+                if check_quit(review_date_str):
+                    return employee_data
                 try:
-                    review_date_str = input("What is their review date (YYYY-MM-DD)? ")
-                    if check_quit(review_date_str):
-                        return employee_data
-                    elif not datetime.datetime.strptime(review_date_str, '%Y-%m-%d').date():
-                        raise ValueError
+                    employee_object.review_date = review_date_str
                     break
-                except ValueError:
-                    print("Invalid date format. Please use YYYY-MM-DD format.")
+                except ValueError as e:
+                    print(e)
 
             # Validate review rating
             while True:
+                review_rating_str = input("What is their review rating (1-5)? ")
+                if check_quit(review_rating_str):
+                    return employee_data
                 try:
-                    review_rating_str = input("What is their review rating (1-5)? ")
-                    if check_quit(review_rating_str):
-                        return employee_data
-                    elif not (1 <= int(review_rating_str) <= 5):
-                        raise ValueError
+                    employee_object.review_rating = review_rating_str
                     break
-                except ValueError:
-                    print("Review rating must be an integer between 1 and 5.")
+                except ValueError as e:
+                    print(e)
 
             # Assign validated values to the employee object
             employee_object.first_name = first_name

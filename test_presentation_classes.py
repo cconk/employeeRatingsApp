@@ -31,21 +31,39 @@ class TestIO(unittest.TestCase):
             self.assertEqual(employee_data[0].review_rating, 4)
             self.assertEqual(len(employee_data), 1)
 
-    # testing an IO method that requires invalid user input
-    def test_input_employee_data_invalid_user_input(self):
+    def test_input_employee_data_quit(self):
         employee_data = []
-        with patch('builtins.input', side_effect=("John111", "Doe111","2023-01-aa", "asdf")):
-            IO.input_employee_data(employee_data, Employee)
-            self.assertEqual(len(employee_data), 0)
-        with patch('builtins.input', side_effect=("John", "Doe111","2023-01-aa", "asdf")):
-            IO.input_employee_data(employee_data, Employee)
-            self.assertEqual(len(employee_data), 0)
-        with patch('builtins.input', side_effect=("John", "Doe","2023-01-aa", "asdf")):
-            IO.input_employee_data(employee_data, Employee)
-            self.assertEqual(len(employee_data), 0)
-        with patch('builtins.input', side_effect=("John", "Doe","2023-01-01", "asdf")):
-            IO.input_employee_data(employee_data, Employee)
-            self.assertEqual(len(employee_data), 0)
+        with patch('builtins.input', return_value="quit"):
+            result = IO.input_employee_data(employee_data, Employee)
+        self.assertEqual(result, employee_data)
+
+    def test_input_employee_data_invalid_firstName(self):
+        employee_data = []
+        employee_type = Employee
+        with patch('builtins.input', side_effect=("John111","John", "Doe","2023-01-01", "4")), patch('builtins.print') as mock_print:
+            result = IO.input_employee_data(employee_data, employee_type)
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0].first_name, "John")
+            self.assertEqual(result[0].last_name, "Doe")
+            self.assertEqual(result[0].review_date, "2023-01-01")
+            self.assertEqual(result[0].review_rating, 4)
+            mock_print.assert_called()
+
+    # testing an IO method that requires invalid user input
+    # def test_input_employee_data_invalid_user_input(self):
+    #     employee_data = Employee()
+    #     with patch('builtins.input', side_effect=("John111", "Doe","2023-01-01", "5")):
+    #         employee_data.first_name = 
+    #         self.assertEqual(len(employee_data), 0)
+    #     with patch('builtins.input', side_effect=("John", "Doe111","2023-01-01", "5")):
+    #         IO.input_employee_data(employee_data, Employee)
+    #         self.assertEqual(len(employee_data), 0)
+    #     with patch('builtins.input', side_effect=("John", "Doe","2023-01-aa", "5")):
+    #         IO.input_employee_data(employee_data, Employee)
+    #         self.assertEqual(len(employee_data), 0)
+    #     with patch('builtins.input', side_effect=("John", "Doe","2023-01-01", "asdf")):
+    #         IO.input_employee_data(employee_data, Employee)
+    #         self.assertEqual(len(employee_data), 0)
     
     #testing an IO method that user quits on first input
     def test_input_employee_data_quit_onFirstName(self):

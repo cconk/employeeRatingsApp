@@ -90,7 +90,7 @@ class Employee(Person):
 
     @review_rating.setter
     def review_rating(self, value: str):
-        if value in (1, 2, 3, 4, 5):
+        if int(value) in (1, 2, 3, 4, 5):
             self.__review_rating = value
         else:
             raise ValueError("Please choose only values 1 through 5")
