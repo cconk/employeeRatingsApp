@@ -15,7 +15,7 @@ from data_classes import Employee
 class TestIO(unittest.TestCase):
     #testing an IO method that doesn't require user input
     def test_output_employee_data(self):
-        employees = [Employee("John", "Doe", "2023-01-01", 4)]
+        employees = [Employee("John", "Doe", "2023-01-01", "4")]
         with patch('builtins.print') as mock_print:
             IO.output_employee_data(employees)
             mock_print.assert_called()
@@ -28,14 +28,16 @@ class TestIO(unittest.TestCase):
             self.assertEqual(employee_data[0].first_name, "John")
             self.assertEqual(employee_data[0].last_name, "Doe")
             self.assertEqual(employee_data[0].review_date, "2023-01-01")
-            self.assertEqual(employee_data[0].review_rating, 4)
+            self.assertEqual(employee_data[0].review_rating, "4")
             self.assertEqual(len(employee_data), 1)
 
     def test_input_employee_data_quit(self):
         employee_data = []
-        with patch('builtins.input', return_value="quit"):
-            result = IO.input_employee_data(employee_data, Employee)
-        self.assertEqual(result, employee_data)
+        employee_type = Employee
+        with patch('builtins.input', side_effect=("quit")), patch('builtins.print') as mock_print:
+            result = IO.input_employee_data(employee_data, employee_type)
+        self.assertEqual(result, [])
+        mock_print.assert_called()
 
     def test_input_employee_data_invalid_firstName(self):
         employee_data = []
@@ -46,24 +48,44 @@ class TestIO(unittest.TestCase):
             self.assertEqual(result[0].first_name, "John")
             self.assertEqual(result[0].last_name, "Doe")
             self.assertEqual(result[0].review_date, "2023-01-01")
-            self.assertEqual(result[0].review_rating, 4)
+            self.assertEqual(result[0].review_rating, "4")
+            mock_print.assert_called()
+    
+    def test_input_employee_data_invalid_lastName(self):
+        employee_data = []
+        employee_type = Employee
+        with patch('builtins.input', side_effect=("John","Doe111", "Doe","2023-01-01", "4")), patch('builtins.print') as mock_print:
+            result = IO.input_employee_data(employee_data, employee_type)
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0].first_name, "John")
+            self.assertEqual(result[0].last_name, "Doe")
+            self.assertEqual(result[0].review_date, "2023-01-01")
+            self.assertEqual(result[0].review_rating, "4")
+            mock_print.assert_called()
+    
+    def test_input_employee_data_invalid_reviewDate(self):
+        employee_data = []
+        employee_type = Employee
+        with patch('builtins.input', side_effect=("John","Doe","2023-01-aa","2023-01-01", "4")), patch('builtins.print') as mock_print:
+            result = IO.input_employee_data(employee_data, employee_type)
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0].first_name, "John")
+            self.assertEqual(result[0].last_name, "Doe")
+            self.assertEqual(result[0].review_date, "2023-01-01")
+            self.assertEqual(result[0].review_rating, "4")
             mock_print.assert_called()
 
-    # testing an IO method that requires invalid user input
-    # def test_input_employee_data_invalid_user_input(self):
-    #     employee_data = Employee()
-    #     with patch('builtins.input', side_effect=("John111", "Doe","2023-01-01", "5")):
-    #         employee_data.first_name = 
-    #         self.assertEqual(len(employee_data), 0)
-    #     with patch('builtins.input', side_effect=("John", "Doe111","2023-01-01", "5")):
-    #         IO.input_employee_data(employee_data, Employee)
-    #         self.assertEqual(len(employee_data), 0)
-    #     with patch('builtins.input', side_effect=("John", "Doe","2023-01-aa", "5")):
-    #         IO.input_employee_data(employee_data, Employee)
-    #         self.assertEqual(len(employee_data), 0)
-    #     with patch('builtins.input', side_effect=("John", "Doe","2023-01-01", "asdf")):
-    #         IO.input_employee_data(employee_data, Employee)
-    #         self.assertEqual(len(employee_data), 0)
+    def test_input_employee_data_invalid_reviewRating(self):
+        employee_data = []
+        employee_type = Employee
+        with patch('builtins.input', side_effect=("John","Doe","2023-01-01","asdf", "4")), patch('builtins.print') as mock_print:
+            result = IO.input_employee_data(employee_data, employee_type)
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0].first_name, "John")
+            self.assertEqual(result[0].last_name, "Doe")
+            self.assertEqual(result[0].review_date, "2023-01-01")
+            self.assertEqual(result[0].review_rating, "4")
+            mock_print.assert_called()
     
     #testing an IO method that user quits on first input
     def test_input_employee_data_quit_onFirstName(self):

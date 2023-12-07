@@ -90,10 +90,13 @@ class Employee(Person):
 
     @review_rating.setter
     def review_rating(self, value: str):
-        if int(value) in (1, 2, 3, 4, 5):
-            self.__review_rating = value
-        else:
+        try:
+            int(value)
+            if int(value) in (1, 2, 3, 4, 5):
+                self.__review_rating = value
+            else:
+                raise ValueError("Please choose only values 1 through 5")
+        except ValueError as e:
             raise ValueError("Please choose only values 1 through 5")
-
     def __str__(self):
         return f"{self.first_name},{self.last_name},{self.review_date},{self.__review_rating}"

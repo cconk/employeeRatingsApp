@@ -91,15 +91,15 @@ class IO:
         print()
         print("-" * 50)
         for employee in employee_data:
-            if employee.review_rating == 5:
+            if int(employee.review_rating) == 5:
                 message = " {} {} is rated as 5 (Leading)"
-            elif employee.review_rating == 4:
+            elif int(employee.review_rating) == 4:
                 message = " {} {} is rated as 4 (Strong)"
-            elif employee.review_rating == 3:
+            elif int(employee.review_rating) == 3:
                 message = " {} {} is rated as 3 (Solid)"
-            elif employee.review_rating == 2:
+            elif int(employee.review_rating) == 2:
                 message = " {} {} is rated as 2 (Building)"
-            elif employee.review_rating == 1:
+            elif int(employee.review_rating) == 1:
                 message = " {} {} is rated as 1 (Not Meeting Expectations)"
 
             print(message.format(employee.first_name, employee.last_name, employee.review_date, employee.review_rating))
@@ -130,7 +130,8 @@ class IO:
             :return: boolean
             """
             if input_value.lower() == "quit":
-                print("You chose to quit the employee input process.")
+                # opttional messaging if the user wants to quit
+                # print("You chose to quit the employee input process.")
                 return True
             return False
         
@@ -139,7 +140,7 @@ class IO:
 
             # Validate first name
             while True:
-                first_name = input("What is the employee's first name? ")
+                first_name = input("What is the employee's first name? (or enter quit to return to the main menu) ")
                 if check_quit(first_name):
                     return employee_data
                 try:
@@ -150,7 +151,7 @@ class IO:
 
             # Validate last name
             while True:
-                last_name = input("What is the employee's last name? ")
+                last_name = input("What is the employee's last name? (or enter quit to return to the main menu) ")
                 if check_quit(last_name):
                     return employee_data
                 try:
@@ -161,7 +162,7 @@ class IO:
            
             # Validate review date
             while True:
-                review_date_str = input("What is their review date (YYYY-MM-DD)? ")
+                review_date_str = input("What is their review date (YYYY-MM-DD)? (or enter quit to return to the main menu) ")
                 if check_quit(review_date_str):
                     return employee_data
                 try:
@@ -172,7 +173,7 @@ class IO:
 
             # Validate review rating
             while True:
-                review_rating_str = input("What is their review rating (1-5)? ")
+                review_rating_str = input("What is their review rating (1-5)? (or enter quit to return to the main menu) ")
                 if check_quit(review_rating_str):
                     return employee_data
                 try:
@@ -185,7 +186,7 @@ class IO:
             employee_object.first_name = first_name
             employee_object.last_name = last_name
             employee_object.review_date = review_date_str
-            employee_object.review_rating = int(review_rating_str)
+            employee_object.review_rating = review_rating_str
 
             employee_data.append(employee_object)
 

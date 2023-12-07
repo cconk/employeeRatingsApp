@@ -116,11 +116,14 @@ class Employee(Person):
 
     @review_rating.setter
     def review_rating(self, value: str):
-        if int(value) in (1, 2, 3, 4, 5):
-            self.__review_rating = value
-        else:
+        try:
+            int(value)
+            if int(value) in (1, 2, 3, 4, 5):
+                self.__review_rating = value
+            else:
+                raise ValueError("Please choose only values 1 through 5")
+        except ValueError as e:
             raise ValueError("Please choose only values 1 through 5")
-
     def __str__(self):
         return f"{self.first_name},{self.last_name},{self.review_date},{self.__review_rating}"
 ```
@@ -129,7 +132,31 @@ class Employee(Person):
 
 Description: This is the entry point for the application and running this file will start the application.
 ```python
-name (ignore the warning)
+from processing_classes import FileProcessor
+from presentation_classes import IO
+from data_classes import Employee
+
+
+# Data -------------------------------------------- #
+FILE_NAME: str = 'EmployeeRatings.json'
+
+MENU: str = '''
+---- Employee Ratings ------------------------------
+  Select from the following menu:
+    1. Show current employee rating data.
+    2. Enter new employee rating data.
+    3. Save data to a file.
+    4. Exit the program.
+--------------------------------------------------
+'''
+
+employees: list = []  # a table of employee data
+menu_choice = ''
+
+# Beginning of the main body of this script
+employees = FileProcessor.read_employee_data_from_file(file_name=FILE_NAME, employee_data=employees, employee_type=Employee)  # Note this is the class name (ignore the warning)
+
+# Repeat the follow tasks
 while True:
     IO.output_menu(menu=MENU)
 
@@ -144,13 +171,7 @@ while True:
 
     elif menu_choice == "2":  # Get new data (and display the change)
         try:
-            employees = IO.input_employee_data(employee_data=employees, employee_type=Employee)  # Note this is the
-```
-
-#### name (ignore the warning)
-Description: 
-```python
-name (ignore the warning)
+            employees = IO.input_employee_data(employee_data=employees, employee_type=Employee)  
             IO.output_employee_data(employee_data=employees)
         except Exception as e:
             IO.output_error_messages(e)
@@ -169,32 +190,12 @@ name (ignore the warning)
 ```
 
 ### presentation_classes.py
-#### IO:
-Description: 
+Description: Presentation classes are used to handle data input and output
 ```python
-IO:
-    """
-    A collection of presentation layer functions that manage user input and output
-
-    ChangeLog: (Who, When, What)
-    RRoot,1.1.2030,Created Class
-    Chad Conklin, 11/29/2020, Added read_employee_data_from_file and write_employee_data_to_file
-    """
-    pass
+class IO:
 
     @staticmethod
     def output_error_messages(message: str, error: Exception = None):
-        """ This function displays the a custom error messages to the user
-
-        ChangeLog: (Who, When, What)
-        RRoot,1.3.2030,Created function
-        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
-
-        :param message: string with message data to display
-        :param error: Exception object with technical message to display
-
-        :return: None
-        """
 
         print(message, end="\n\n")
         if error is not None:
@@ -204,14 +205,6 @@ IO:
 
     @staticmethod
     def output_menu(menu: str):
-        """ This function displays the menu of choices to the user
-
-        ChangeLog: (Who, When, What)
-        RRoot,1.1.2030,Created function
-        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
-
-        :return: None
-        """
         print()
         print(menu)
         print()
@@ -219,14 +212,6 @@ IO:
 
     @staticmethod
     def input_menu_choice():
-        """ This function gets a menu choice from the user
-
-        ChangeLog: (Who, When, What)
-        RRoot,1.1.2030,Created function
-        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
-
-        :return: string with the users choice
-        """
         choice = "0"
         try:
             choice = input("Enter your menu choice number: ")
@@ -240,29 +225,19 @@ IO:
 
     @staticmethod
     def output_employee_data(employee_data: list):
-        """ This function displays employee data to the user
-
-        ChangeLog: (Who, When, What)
-        RRoot,1.1.2030,Created function
-        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
-
-        :param employee_data: list of employee object data to be displayed
-
-        :return: None
-        """
         message:str = ''
         print()
         print("-" * 50)
         for employee in employee_data:
-            if employee.review_rating == 5:
+            if int(employee.review_rating) == 5:
                 message = " {} {} is rated as 5 (Leading)"
-            elif employee.review_rating == 4:
+            elif int(employee.review_rating) == 4:
                 message = " {} {} is rated as 4 (Strong)"
-            elif employee.review_rating == 3:
+            elif int(employee.review_rating) == 3:
                 message = " {} {} is rated as 3 (Solid)"
-            elif employee.review_rating == 2:
+            elif int(employee.review_rating) == 2:
                 message = " {} {} is rated as 2 (Building)"
-            elif employee.review_rating == 1:
+            elif int(employee.review_rating) == 1:
                 message = " {} {} is rated as 1 (Not Meeting Expectations)"
 
             print(message.format(employee.first_name, employee.last_name, employee.review_date, employee.review_rating))
@@ -272,35 +247,19 @@ IO:
 
     @staticmethod
     def input_employee_data(employee_data: list, employee_type: Employee):
-        """ This function gets the first name, last name, and rating from the user
-
-        ChangeLog: (Who, When, What)
-        RRoot,1.1.2030,Created function
-        Chad Conklin, 11/29/2020, Copied from module 8 assignment starter code
-
-        :param employee_data: list of dictionary rows to be filled with input data
-
-        :return: list
-        """
         def check_quit(input_value: str):
-            """ This function checks if the user wants to quit
-
-            ChangeLog: (Who, When, What)
-            Chad Conklin, 11/29/2020, Created function
-
-            :param input_value: string to check if the user wants to quit
-
-            :return: boolean
-            """
             if input_value.lower() == "quit":
-                print("You chose to quit the employee input process.")
+                # opttional messaging if the user wants to quit
+                # print("You chose to quit the employee input process.")
                 return True
             return False
         
         try:
             employee_object = employee_type()
+
+            # Validate first name
             while True:
-                first_name = input("What is the employee's first name? ")
+                first_name = input("What is the employee's first name? (or enter quit to return to the main menu) ")
                 if check_quit(first_name):
                     return employee_data
                 try:
@@ -308,8 +267,10 @@ IO:
                     break
                 except ValueError as e:
                     print(e)
+
+            # Validate last name
             while True:
-                last_name = input("What is the employee's last name? ")
+                last_name = input("What is the employee's last name? (or enter quit to return to the main menu) ")
                 if check_quit(last_name):
                     return employee_data
                 try:
@@ -317,8 +278,10 @@ IO:
                     break
                 except ValueError as e:
                     print(e)
+           
+            # Validate review date
             while True:
-                review_date_str = input("What is their review date (YYYY-MM-DD)? ")
+                review_date_str = input("What is their review date (YYYY-MM-DD)? (or enter quit to return to the main menu) ")
                 if check_quit(review_date_str):
                     return employee_data
                 try:
@@ -326,8 +289,10 @@ IO:
                     break
                 except ValueError as e:
                     print(e)
+
+            # Validate review rating
             while True:
-                review_rating_str = input("What is their review rating (1-5)? ")
+                review_rating_str = input("What is their review rating (1-5)? (or enter quit to return to the main menu) ")
                 if check_quit(review_rating_str):
                     return employee_data
                 try:
@@ -335,10 +300,12 @@ IO:
                     break
                 except ValueError as e:
                     print(e)
+
+            # Assign validated values to the employee object
             employee_object.first_name = first_name
             employee_object.last_name = last_name
             employee_object.review_date = review_date_str
-            employee_object.review_rating = int(review_rating_str)
+            employee_object.review_rating = review_rating_str
 
             employee_data.append(employee_object)
 
@@ -351,31 +318,12 @@ IO:
 ```
 
 ### processing_classes.py
-#### FileProcessor:
-Description: 
+Description: This class handles the processing of files where the data is saved.
 ```python
-FileProcessor:
-    """
-    A collection of processing layer functions that work with Json files
-
-    ChangeLog: (Who, When, What)
-    RRoot,1.1.2030,Created Class
-    Chad Conklin, 11/29/2020, Added read_employee_data_from_file and write_employee_data_to_file
-    """
+class FileProcessor:
 
     @staticmethod
     def read_employee_data_from_file(file_name: str, employee_data: list, employee_type: Employee):
-        """ This function reads data from a json file and loads it into a list of dictionary rows
-
-        ChangeLog: (Who, When, What)
-        RRoot,1.1.2030,Created function
-        Chad Conklin, 11/29/2020, Copied code from Module 8 Assignment
-
-        :param file_name: string data with name of file to read from
-        :param employee_data: list of dictionary rows to be filled with file data
-        :param employee_type: an reference to the Employee class
-        :return: list
-        """
         try:
             with open(file_name, "r") as file:
                 list_of_dictionary_data = json.load(file)
@@ -395,17 +343,6 @@ FileProcessor:
 
     @staticmethod
     def write_employee_data_to_file(file_name: str, employee_data: list):
-        """ This function writes data to a json file with data from a list of dictionary rows
-
-        ChangeLog: (Who, When, What)
-        RRoot,1.1.2030,Created function
-        Chad Conklin, 11/29/2020, Added try/except block to handle file not found error
-
-        :param file_name: string data with name of file to write to
-        :param employee_data: list of dictionary rows to be writen to the file
-
-        :return: None
-        """
         try:
             list_of_dictionary_data: list = []
             for employee in employee_data:  # Convert List of employee objects to list of dictionary rows.
@@ -427,10 +364,9 @@ FileProcessor:
 ```
 
 ### test_data_classes.py
-#### TestPerson(unittest.TestCase):
-Description: 
+Description: Unit tests for the data classes
 ```python
-TestPerson(unittest.TestCase):
+class TestPerson(unittest.TestCase):
     def test_person_creation(self):
         person = Person("John", "Doe")
         self.assertEqual(person.first_name, "John")
@@ -438,12 +374,8 @@ TestPerson(unittest.TestCase):
     def test_person_name_validation(self):
         with self.assertRaises(ValueError):
             Person("John3", "Doe")
-```
 
-#### TestEmployee(unittest.TestCase):
-Description: 
-```python
-TestEmployee(unittest.TestCase):
+class TestEmployee(unittest.TestCase):
     def test_employee_creation(self):
         employee = Employee("John", "Doe", "2023-01-01", 4)
         self.assertEqual(employee.first_name, "John")
@@ -462,15 +394,17 @@ if __name__ == '__main__':
 ```
 
 ### test_presentation_classes.py
-#### TestIO(unittest.TestCase):
-Description: 
+Description: Unit tests for presentation classes
 ```python
-TestIO(unittest.TestCase):
+class TestIO(unittest.TestCase):
+    #testing an IO method that doesn't require user input
     def test_output_employee_data(self):
-        employees = [Employee("John", "Doe", "2023-01-01", 4)]
+        employees = [Employee("John", "Doe", "2023-01-01", "4")]
         with patch('builtins.print') as mock_print:
             IO.output_employee_data(employees)
             mock_print.assert_called()
+
+    #testing an IO method that requires valid user input
     def test_input_employee_data(self):
         employee_data = []
         with patch('builtins.input', side_effect=("John", "Doe","2023-01-01", "4")):
@@ -478,14 +412,16 @@ TestIO(unittest.TestCase):
             self.assertEqual(employee_data[0].first_name, "John")
             self.assertEqual(employee_data[0].last_name, "Doe")
             self.assertEqual(employee_data[0].review_date, "2023-01-01")
-            self.assertEqual(employee_data[0].review_rating, 4)
+            self.assertEqual(employee_data[0].review_rating, "4")
             self.assertEqual(len(employee_data), 1)
 
     def test_input_employee_data_quit(self):
         employee_data = []
-        with patch('builtins.input', return_value="quit"):
-            result = IO.input_employee_data(employee_data, Employee)
-        self.assertEqual(result, employee_data)
+        employee_type = Employee
+        with patch('builtins.input', side_effect=("quit")), patch('builtins.print') as mock_print:
+            result = IO.input_employee_data(employee_data, employee_type)
+        self.assertEqual(result, [])
+        mock_print.assert_called()
 
     def test_input_employee_data_invalid_firstName(self):
         employee_data = []
@@ -496,52 +432,69 @@ TestIO(unittest.TestCase):
             self.assertEqual(result[0].first_name, "John")
             self.assertEqual(result[0].last_name, "Doe")
             self.assertEqual(result[0].review_date, "2023-01-01")
-            self.assertEqual(result[0].review_rating, 4)
+            self.assertEqual(result[0].review_rating, "4")
             mock_print.assert_called()
+    
+    def test_input_employee_data_invalid_lastName(self):
+        employee_data = []
+        employee_type = Employee
+        with patch('builtins.input', side_effect=("John","Doe111", "Doe","2023-01-01", "4")), patch('builtins.print') as mock_print:
+            result = IO.input_employee_data(employee_data, employee_type)
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0].first_name, "John")
+            self.assertEqual(result[0].last_name, "Doe")
+            self.assertEqual(result[0].review_date, "2023-01-01")
+            self.assertEqual(result[0].review_rating, "4")
+            mock_print.assert_called()
+    
+    def test_input_employee_data_invalid_reviewDate(self):
+        employee_data = []
+        employee_type = Employee
+        with patch('builtins.input', side_effect=("John","Doe","2023-01-aa","2023-01-01", "4")), patch('builtins.print') as mock_print:
+            result = IO.input_employee_data(employee_data, employee_type)
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0].first_name, "John")
+            self.assertEqual(result[0].last_name, "Doe")
+            self.assertEqual(result[0].review_date, "2023-01-01")
+            self.assertEqual(result[0].review_rating, "4")
+            mock_print.assert_called()
+
+    def test_input_employee_data_invalid_reviewRating(self):
+        employee_data = []
+        employee_type = Employee
+        with patch('builtins.input', side_effect=("John","Doe","2023-01-01","asdf", "4")), patch('builtins.print') as mock_print:
+            result = IO.input_employee_data(employee_data, employee_type)
+            self.assertEqual(len(result), 1)
+            self.assertEqual(result[0].first_name, "John")
+            self.assertEqual(result[0].last_name, "Doe")
+            self.assertEqual(result[0].review_date, "2023-01-01")
+            self.assertEqual(result[0].review_rating, "4")
+            mock_print.assert_called()
+    
+    #testing an IO method that user quits on first input
     def test_input_employee_data_quit_onFirstName(self):
         employee_data = []
         with patch('builtins.input', side_effect=("quit", "Doe","2023-01-01", "4")):
             IO.input_employee_data(employee_data, Employee)
             self.assertEqual(len(employee_data), 0)
+
+    # testing an IO method that requires user input
     def test_input_menu_choice(self):
         with patch('builtins.input', side_effect=["1"]):
             choice = IO.input_menu_choice()
             self.assertEqual(choice, "1")
+
+    # testing an IO method that doesn't require user input
     def test_output_error_messages(self):
         with patch('builtins.print') as mock_print:
             IO.output_error_messages("Test Error Message")
             mock_print.assert_called()
+    
+    # testing an IO method that doesn't require user input
     def test_output_menu(self):
         with patch('builtins.print') as mock_print:
             IO.output_menu("Test Menu")
             mock_print.assert_called()
-
-if __name__ == '__main__':
-    unittest.main()
-```
-
-### test_processing_classes.py
-#### TestFileProcessor(unittest.TestCase):
-Description: 
-```python
-TestFileProcessor(unittest.TestCase):
-    test_file = "test_EmployeeRatings.json"
-    def setUp(self):
-        with open(self.test_file, "w") as file:
-            file.write('[{"FirstName": "John", "LastName": "Doe", "ReviewDate": "2023-01-01", "ReviewRating": 4}]')
-    def test_read_employee_data_from_file(self):
-        employees = []
-        employees = FileProcessor.read_employee_data_from_file(self.test_file, employees, Employee)
-        self.assertEqual(len(employees), 1)
-        self.assertIsInstance(employees[0], Employee)
-    def test_write_employee_data_to_file(self):
-        employees = [Employee("Jane", "Doe", "2023-02-01", 5)]
-        FileProcessor.write_employee_data_to_file(self.test_file, employees)
-        with open(self.test_file, "r") as file:
-            content = file.read()
-            self.assertIn("Jane", content)
-    def tearDown(self):
-        os.remove(self.test_file)
 
 if __name__ == '__main__':
     unittest.main()
